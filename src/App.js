@@ -2,11 +2,16 @@ import './App.css';
 import React, { useState,useEffect } from 'react';
 import LeftNav from './Componenets/LeftNav';
 import MapCom from './Componenets/MapCom';
-
+import RightCom from './Componenets/RightCom';
 
 function App() {
   let [countries, setCountries] = useState([])
-  let [country, setCountry] = useState([])
+  let [country, setCountry] = useState()
+  let [counrtyData,setCountryData]=useState()
+  let [relatedCourties,setRelatedCountries]=useState([])
+  let [coutryIndex,setCountryIndex]=useState(0)
+
+
   let [details,setDetails]=useState({
     lat:0,
     long:0
@@ -29,10 +34,37 @@ function App() {
             lat:cot.countryInfo.lat,
             long:cot.countryInfo.long
           })
+          setCountryData({
+            country:cot.country,
+            cases:cot.cases,
+            flag:cot.countryInfo.flag,
+            deaths:cot.deaths,
+            recovered:cot.recovered
+          })
+          // setCountryIndex(idx)
+          let tempRelatedCountries=[]
+          if(countries && idx){
+             if(countries.length-idx >= 6){
+                  for(let i=idx;i<idx+5;i++){
+                    tempRelatedCountries.push(countries[i]);
+                  }
+             }else{
+              for(let i=countries.length-1;i>=countries.length-6;i--){
+                tempRelatedCountries.push(countries[i]);
+              }
+             }
+             setRelatedCountries(tempRelatedCountries)
+          }
         }
       })
+
+     
     }
+
   },[country])
+
+
+
 
   
 
@@ -48,7 +80,8 @@ function App() {
         why only lat,long ?
         becz only lat ,long are required to set the position in the map
        */}
-       <MapCom lat={details.lat} long={details.long}/>
+       {/* <MapCom lat={details.lat} long={details.long}/> */}
+       <RightCom  lat={details.lat} long={details.long} counrtyData={counrtyData} relatedCourties={relatedCourties} />
     </div>
   );
 }
